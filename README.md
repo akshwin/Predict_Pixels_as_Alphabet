@@ -1,4 +1,4 @@
-**Letter Recognition**
+# PREDICT PIXELS AS ALPHABET
 
 **Introduction:**
 
