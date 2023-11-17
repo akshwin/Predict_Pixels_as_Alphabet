@@ -1,24 +1,68 @@
-# Support Vector Machine for Letter Recognition
-# Introduction
-Support Vector Machines (SVM) are powerful supervised learning algorithms used for classification and regression tasks. In this project, we employ an SVM to recognize black-and-white rectangular pixel displays representing the 26 capital letters of the English alphabet. The dataset comprises 20,000 stimuli derived from 20 different fonts, with each letter distorted to create unique images. The stimuli are transformed into 16 numerical attributes, including statistical moments and edge counts, which are then scaled to integer values between 0 and 15. The SVM is trained on 16,000 items, and the resulting model is applied to predict the letter category for the remaining 4,000 stimuli.
+**Letter Recognition**
 
-# Summary of Steps
-Importing Libraries: We begin by importing essential libraries, including NumPy, pandas, and Matplotlib, to handle data and visualize results.
+**Introduction:**
 
-Data Loading and Exploration: The dataset, named "letterdata.csv," is loaded into a pandas DataFrame (df). The first 10 rows of the dataset are displayed for initial exploration.
+In this project, we implemented a Support Vector Machine (SVM) to classify black-and-white rectangular pixel displays into one of the 26 capital letters in the English alphabet. The dataset used for this task consists of 20,000 unique stimuli, each representing a distorted version of the 26 letters based on 20 different fonts. Each stimulus is characterized by 16 primitive numerical attributes, such as statistical moments and edge counts, which were scaled to integer values ranging from 0 to 15.
 
-Data Preprocessing: The dataset is split into features (x) and labels (y). The features consist of the numerical attributes, and the labels represent the corresponding letters.
+The primary objective is to train the SVM on the first 16,000 items and then utilize the trained model to predict the letter category for the remaining 4,000 items. The SVM algorithm, provided by the scikit-learn library, is employed for this classification task.
 
-Data Splitting: The data is divided into training and testing sets. The first 16,000 items are used for training (x_train and y_train), while the remaining 4,000 items are reserved for testing (x_test and y_test).
+**Steps:**
 
-Building SVM Model: An SVM model is constructed using the Support Vector Classification (SVC) from the scikit-learn library. The model is trained on the training data with a specified penalty parameter (C).
+1. **Import Libraries:**
+```python
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn import svm, metrics
+import seaborn as sns
+%matplotlib inline
+```
 
-Model Evaluation: The trained model is used to predict letter categories for the test set (y_predict). The accuracy of the model is evaluated using the score method.
+2. **Load and Explore Data:**
+```python
+df = pd.read_csv("letterdata.csv")
+df.head(10)
+```
 
-Confusion Matrix and Visualization: A confusion matrix is generated to assess the model's performance. The matrix is visualized using a heatmap with annotations to highlight correct and incorrect predictions.
+3. **Data Splitting:**
+```python
+x = np.array(df)[:, 1:16]
+y = np.array(df.letter)[:]
 
-# Source
-The details of the letter recognition dataset and the SVM model implementation can be found in the article titled "Letter Recognition Using Holland-style Adaptive Classifiers" by P. W. Frey and D. J. Slate (Machine Learning Vol. 6 No.2, March 91).
+x_train = x[:16000, :]
+x_test = x[16001:, :]
+y_train = y[:16000] 
+y_test = y[16001:]
+```
 
-# Conclusion
-The SVM model demonstrates a commendable accuracy of approximately 92.7% in predicting the letter categories for the given dataset. The confusion matrix and heatmap provide insights into the model's performance for each letter. This project serves as a practical example of applying SVM for character recognition, showcasing its effectiveness in handling complex classification tasks. Further fine-tuning and optimization can be explored to enhance the model's accuracy and robustness.
+4. **Build SVM Model:**
+```python
+model = svm.SVC(C=3)  # C is the penalty for wrong classification
+model.fit(x_train, y_train)
+```
+
+5. **Predictions and Evaluation:**
+```python
+y_predict = model.predict(x_test)
+accuracy = model.score(x_test, y_test)
+print(f"Model Accuracy: {accuracy}")
+```
+
+6. **Confusion Matrix:**
+```python
+cm = metrics.confusion_matrix(y_test, y_predict)
+df_cm = pd.DataFrame(cm, index=[i for i in lab], columns=[i for i in plab])
+
+plt.figure(figsize=(20, 13))
+sns.heatmap(df_cm, annot=True, fmt='g', cmap='PiYG')
+plt.show()
+```
+
+**Source:**
+
+The dataset and details about the experiment can be found in the article "Letter Recognition Using Holland-style Adaptive Classifiers" by P. W. Frey and D. J. Slate, published in Machine Learning Vol. 6, No. 2, March 1991.
+
+**Conclusion:**
+
+In conclusion, the SVM model achieved an accuracy of approximately 92.7% on the test set, as indicated by the confusion matrix. This demonstrates the effectiveness of SVM in classifying distorted alphabet characters based on the given numerical attributes. The implementation involved loading the data, splitting it into training and testing sets, building the SVM model, making predictions, and evaluating the model's performance.
+
